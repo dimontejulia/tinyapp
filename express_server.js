@@ -50,6 +50,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   //look up longURL in our url database using shortURL as our key
   const longURL = urlDatabase[shortURL];
+  console.log("short", shortURL, "long", longURL);
   const templateVars = {
     shortURL: shortURL,
     longURL: longURL,
@@ -58,10 +59,11 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  const longURL = req.body; // Log the POST request body to the console
+  const { longURL } = req.body; // Log the POST request body to the console
   const shortURL = generateRandomString();
-  //add newly added url to our database
+  //add new url to the url database
   urlDatabase[shortURL] = longURL;
+  res.redirect(`urls/${shortURL}`);
 });
 
 //use HTML code to pring Hello World with "world" bolded
