@@ -20,9 +20,19 @@ app.get("/", (req, res) => {
 //   res.json(urlDatabase);
 // });
 
+//render the urls_index ejs file
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
+});
+
+//page that displays a single URL and its shortened form
+app.get("/urls/:shortURL", (req, res) => {
+  const templateVars = {
+    shortURL: req.params.shortURL,
+    longURL: req.params.longURL,
+  };
+  res.render("urls_show", templateVars);
 });
 
 //use HTML code to pring Hello World with "world" bolded
