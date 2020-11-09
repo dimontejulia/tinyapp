@@ -58,8 +58,10 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  const longURL = req.body; // Log the POST request body to the console
+  const shortURL = generateRandomString();
+  //add newly added url to our database
+  urlDatabase[shortURL] = longURL;
 });
 
 //use HTML code to pring Hello World with "world" bolded
