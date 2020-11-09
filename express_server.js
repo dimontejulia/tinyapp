@@ -28,9 +28,10 @@ app.get("/urls", (req, res) => {
 
 //page that displays a single URL and its shortened form
 app.get("/urls/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
   const templateVars = {
-    shortURL: req.params.shortURL,
-    longURL: req.params.longURL,
+    shortURL: shortURL,
+    longURL: urlDatabase[shortURL],
   };
   res.render("urls_show", templateVars);
 });
