@@ -80,9 +80,18 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+//delete a url
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
+});
+
+//edit url
+app.post("/urls/:shortURL/", (req, res) => {
+  const shortURL = req.params.shortURL;
+  const { longURL } = req.body;
+  urlDatabase[shortURL] = longURL;
+  res.redirect(`/urls/${req.params.shortURL}`);
 });
 
 app.listen(PORT, () => {
