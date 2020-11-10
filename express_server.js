@@ -59,6 +59,7 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+//add url to the database and redirect to the tiny url's page
 app.post("/urls", (req, res) => {
   const { longURL } = req.body; // Log the POST request body to the console
   const shortURL = generateRandomString();
