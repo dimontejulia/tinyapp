@@ -84,13 +84,13 @@ app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
-//delete a url
+//delete a url and redirect to home page
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
 
-//edit url
+//edit url and redirect to it's page
 app.post("/urls/:shortURL/", (req, res) => {
   const shortURL = req.params.shortURL;
   const { longURL } = req.body;
@@ -98,11 +98,17 @@ app.post("/urls/:shortURL/", (req, res) => {
   res.redirect(`/urls/${req.params.shortURL}`);
 });
 
-//login page, store the username in a cookie
+//login page, store the username in a cookie and redirects to home page
 app.post("/login/", (req, res) => {
   const username = req.body["username"];
-  console.log(username);
   res.cookie("username", username);
+  res.redirect("/urls/");
+});
+
+//logout page, clears the username cookie and redirects to home page
+app.post("/logout/", (req, res) => {
+  const username = req.body["username"];
+  res.clearCookie("username", username);
   res.redirect("/urls/");
 });
 
