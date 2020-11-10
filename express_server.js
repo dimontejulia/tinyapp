@@ -20,6 +20,8 @@ function generateRandomString() {
 const urlDatabase = {
   b2xVn2: "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
+  h34Jak: "http://twitter.com",
+  s8fjj2: "http://wikipedia.com",
 };
 
 //set the view engine to ejs
@@ -50,7 +52,6 @@ app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   //look up longURL in our url database using shortURL as our key
   const longURL = urlDatabase[shortURL];
-  console.log("short", shortURL, "long", longURL);
   const templateVars = {
     shortURL: shortURL,
     longURL: longURL,
@@ -64,6 +65,13 @@ app.post("/urls", (req, res) => {
   //add new url to the url database
   urlDatabase[shortURL] = longURL;
   res.redirect(`urls/${shortURL}`);
+});
+
+//redirects the short url to the actual webpage
+app.get("/u/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[shortURL];
+  res.redirect(longURL);
 });
 
 //use HTML code to pring Hello World with "world" bolded
