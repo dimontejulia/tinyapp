@@ -5,6 +5,9 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 
+var cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
 function generateRandomString() {
   let randString = "";
   var characters =
@@ -92,6 +95,13 @@ app.post("/urls/:shortURL/", (req, res) => {
   const { longURL } = req.body;
   urlDatabase[shortURL] = longURL;
   res.redirect(`/urls/${req.params.shortURL}`);
+});
+
+//login page, store the username in a cookie
+app.post("/login/", (req, res) => {
+  const { username } = req.body;
+  res.cookie("username", username);
+  res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
