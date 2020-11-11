@@ -29,10 +29,12 @@
       </form>
       <% } else { %>
       <!-- there is no username, display form  -->
-      <form method="POST" action="/login">
-        <input name="userID" placeholder="userID" />
-        <button class="btn btn-outline-dark">Login</button>
-      </form>
+      <a class="nav-item nav-link" href="/urls/register"
+        ><button class="btn btn-outline-dark">Register</button>
+      </a>
+      <a class="nav-item nav-link" href="/urls/login"
+        ><button class="btn btn-outline-dark">Login</button>
+      </a>
       <% } %>
     </div>
   </nav>
