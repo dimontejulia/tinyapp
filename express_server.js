@@ -55,30 +55,110 @@ app.get("/", (req, res) => {
 
 //render the urls_index ejs file
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  const userID = req.cookies["user_id"];
+  const templateVars = {
+    urls: urlDatabase,
+    currentUser: users[userID],
+    userID: userID,
+  };
   res.render("urls_index", templateVars);
 });
 
 //page that allows user to register
 app.get("/urls/register", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
-  res.render("urls_register", templateVars);
+  const userID = req.cookies["user_id"];
+  const templateVars = {
+    urls: urlDatabase,
+    currentUser: users[userID],
+    userID: userID,
+  };
+  res.render("register", templateVars);
 });
 
-//register a new user
+//new register a new user
 app.post("/register", (req, res) => {
   const email = req.body["email"];
   const password = req.body["password"];
-  userID = generateRandomString();
-  users[userID] = { id: userID, email: email, password: password };
-  console.log(users);
-  res.cookie("user_id", userID);
-  res.redirect("/urls");
+  if (email === "" || password === "") {
+    res.status(400);
+    res.send("Response - 400 Empty Email or Password");
+  } else if (duplicateEmail(email)) {
+    res.status(400);
+    res.send("Response - 400 Account already exists!");
+  } else {
+    userID = generateRandomString();
+    users[userID] = { id: userID, email: email, password: password };
+    console.log(users);
+    res.cookie("user_id", userID);
+    res.redirect("/urls");
+  }
+});
+
+//checks if user email is in the database already
+const duplicateEmail = function (checkEmail) {
+  const keys = Object.keys(users);
+  for (let key of keys) {
+    if (checkEmail === users[key].email) {
+      return true;
+    }
+  }
+  return false;
+};
+
+//checks if password matches the one in the database
+const validatePassword = function (enteredPassword) {
+  console.log("in function");
+  const keys = Object.keys(users);
+  for (let key of keys) {
+    if (enteredPassword === users[key].password) {
+      console.log("passwords are the same");
+      return true;
+    }
+  }
+  return false;
+};
+
+//new page that allows user to login
+app.get("/urls/login", (req, res) => {
+  const userID = req.cookies["user_id"];
+  const templateVars = {
+    urls: urlDatabase,
+    currentUser: users[userID],
+    userID: userID,
+  };
+  res.render("login", templateVars);
+});
+
+//login page, store the userID in a cookie and redirects to home page
+app.post("/login", (req, res) => {
+  const email = req.body["email"];
+  const password = req.body["password"];
+  if (email === "" || password === "") {
+    res.status(400);
+    res.send("Response - 400 Empty Email or Password");
+  } else if (duplicateEmail(email) === false) {
+    res.status(400);
+    res.send("Response - 403 Account doesn't exist, please register");
+  } else if (validatePassword(password) === false) {
+    res.status(400);
+    res.send("Response - 403 Account doesn't exist, please register");
+  } else {
+    userID = generateRandomString();
+    users[userID] = { id: userID, email: email, password: password };
+    console.log(users);
+    res.cookie("user_id", userID);
+    res.redirect("/urls");
+  }
 });
 
 //page that allows user to create a new url
 app.get("/urls/new", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  const userID = req.cookies["user_id"];
+  const templateVars = {
+    urls: urlDatabase,
+    currentUser: users[userID],
+    userID: userID,
+  };
   res.render("urls_new", templateVars);
 });
 
@@ -87,10 +167,13 @@ app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   //look up longURL in our url database using shortURL as our key
   const longURL = urlDatabase[shortURL];
+  const userID = req.cookies["user_id"];
   const templateVars = {
     shortURL: shortURL,
     longURL: longURL,
-    username: req.cookies["username"],
+    currentUser: users[userID],
+    urls: urlDatabase,
+    userID: req.cookies["user_id"],
   };
   res.render("urls_show", templateVars);
 });
@@ -125,18 +208,11 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect(`/urls/${req.params.shortURL}`);
 });
 
-//login page, store the username in a cookie and redirects to home page
-app.post("/login", (req, res) => {
-  const username = req.body["username"];
-  res.cookie("username", username);
-  res.redirect("/urls/");
-});
-
-//logout page, clears the username cookie and redirects to home page
+//logout page, clears the userID cookie and redirects to home page
 app.post("/logout", (req, res) => {
-  const username = req.body["username"];
-  res.clearCookie("username", username);
-  res.redirect("/urls/");
+  const userID = req.body["user_id"];
+  res.clearCookie("user_id", userID);
+  res.redirect("/urls");
 });
 
 app.listen(PORT, () => {
