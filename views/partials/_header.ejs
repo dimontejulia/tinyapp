@@ -19,18 +19,18 @@
       </div>
     </div>
     <div class="form-row align-items-center">
-      <% if (username){ %>
+      <% if (userID){ %>
       <!-- user is logged out, display logout button  -->
       <form method="POST" action="/logout">
-        <label for="username" class="nav-item"
-          >Logged In As: <%= username %>!</label
+        <label for="email" class="nav-item"
+          >Logged In As: <%= currentUser["email"] %>!</label
         >
         <button class="btn btn-outline-dark">Logout</button>
       </form>
       <% } else { %>
       <!-- there is no username, display form  -->
       <form method="POST" action="/login">
-        <input name="username" placeholder="Username" />
+        <input name="userID" placeholder="userID" />
         <button class="btn btn-outline-dark">Login</button>
       </form>
       <% } %>
