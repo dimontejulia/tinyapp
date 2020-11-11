@@ -27,6 +27,19 @@ const urlDatabase = {
   s8fjj2: "http://wikipedia.com",
 };
 
+const users = {
+  userRandomID: {
+    id: "userRandomID",
+    email: "user@example.com",
+    password: "purple-monkey-dinosaur",
+  },
+  user2RandomID: {
+    id: "user2RandomID",
+    email: "user2@example.com",
+    password: "dishwasher-funk",
+  },
+};
+
 //set the view engine to ejs
 app.set("view engine", "ejs");
 
@@ -46,8 +59,27 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+//page that allows user to register
+app.get("/urls/register", (req, res) => {
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  res.render("urls_register", templateVars);
+});
+
+//register a new user
+app.post("/register", (req, res) => {
+  const email = req.body["email"];
+  const password = req.body["password"];
+  userID = generateRandomString();
+  users[userID] = { id: userID, email: email, password: password };
+  console.log(users);
+  res.cookie("user_id", userID);
+  res.redirect("/urls");
+});
+
+//page that allows user to create a new url
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  res.render("urls_new", templateVars);
 });
 
 //page that displays a single URL and its shortened form
@@ -63,6 +95,19 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+//redirects the short url to the actual webpage
+app.get("/u/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[shortURL];
+  res.redirect(longURL);
+});
+
+//delete a url and redirect to home page
+app.post("/urls/:shortURL/delete", (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect("/urls");
+});
+
 //add url to the database and redirect to the tiny url's page
 app.post("/urls", (req, res) => {
   const { longURL } = req.body; // Log the POST request body to the console
@@ -72,26 +117,8 @@ app.post("/urls", (req, res) => {
   res.redirect(`urls/${shortURL}`);
 });
 
-//redirects the short url to the actual webpage
-app.get("/u/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL];
-  res.redirect(longURL);
-});
-
-//use HTML code to pring Hello World with "world" bolded
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
-//delete a url and redirect to home page
-app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
-});
-
 //edit url and redirect to it's page
-app.post("/urls/:shortURL/", (req, res) => {
+app.post("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const { longURL } = req.body;
   urlDatabase[shortURL] = longURL;
@@ -99,14 +126,14 @@ app.post("/urls/:shortURL/", (req, res) => {
 });
 
 //login page, store the username in a cookie and redirects to home page
-app.post("/login/", (req, res) => {
+app.post("/login", (req, res) => {
   const username = req.body["username"];
   res.cookie("username", username);
   res.redirect("/urls/");
 });
 
 //logout page, clears the username cookie and redirects to home page
-app.post("/logout/", (req, res) => {
+app.post("/logout", (req, res) => {
   const username = req.body["username"];
   res.clearCookie("username", username);
   res.redirect("/urls/");
