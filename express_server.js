@@ -213,8 +213,14 @@ app.get("/urls/:shortURL", (req, res) => {
 //redirects the short url to the actual webpage
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL].longURL;
-  //res.redirect(longURL);
+  const userID = req.cookies["user_id"];
+  const templateVars = {
+    currentUser: users[userID],
+    urls: urlDatabase,
+    userID: req.cookies["user_id"],
+  };
+  const url = templateVars.urls[shortURL].longURL;
+  res.redirect(url);
 });
 
 //delete a url and redirect to home page
