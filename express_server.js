@@ -169,18 +169,22 @@ app.post("/login", (req, res) => {
     res.status(400);
     res.send("Response - 403 Account doesn't exist, please register");
   } else {
-    const keys = Object.keys(users);
-    for (let key of keys) {
-      if (users[key].email === email) {
-        const currentID = users[key].id;
-        console.log(currentID);
-        console.log(users);
-        req.session.user_id = currentID;
-        res.redirect("/urls");
-      }
-    }
+    const user = getUserByEmail(email, users);
+    const currentID = user.id;
+    req.session.user_id = currentID;
+    res.redirect("/urls");
   }
 });
+
+const getUserByEmail = function (email, database) {
+  const users = database;
+  const keys = Object.keys(users);
+  for (let key of keys) {
+    if (users[key].email === email) {
+      return users[key];
+    }
+  }
+};
 
 //page that allows user to create a new url
 app.get("/urls/new", (req, res) => {
