@@ -13,8 +13,10 @@
 
   <body>
     <%- include('partials/_header') %>
+    
     <div class="card text-center">
       <div class="card-header"></div>
+      <% if (urls[shortURL].userID === userID){ %>
       <div class="card-body">
         <h5 class="card-title">TinyURL for: <%= longURL %></h5>
         <p class="card-text">
@@ -42,7 +44,11 @@
       </div>
       <div class="card-footer text-muted"></div>
     </div>
-
+  <% } else { %>
+    <div class="alert alert-danger" role="alert">
+      This URL does not belong to the current logged in userID.
+    </div>
+  <% } %>
 
     <!-- Bootstrap JS -->
     <script
