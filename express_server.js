@@ -186,16 +186,19 @@ app.get("/urls/new", (req, res) => {
 //edit url and redirect to it's page
 app.post("/urls/:shortURL", (req, res) => {
   const userID = req.cookies["user_id"];
+  const shortURL = req.params.shortURL;
   const templateVars = {
     urls: urlDatabase,
     currentUser: users[userID],
     userID: userID,
   };
-  if (userID === currentUser) {
-    const shortURL = req.params.shortURL;
+  const urlUserId = templateVars.urls[shortURL].userID;
+  if (userID === templateVars.currentUser.id && userID === urlUserId) {
     const { longURL } = req.body;
     urlDatabase[shortURL].longURL = longURL;
     res.redirect(`/urls/${req.params.shortURL}`);
+  } else {
+    console.log("Cannot edit");
   }
 });
 
@@ -230,22 +233,31 @@ app.get("/u/:shortURL", (req, res) => {
 
 //delete a url and redirect to home page
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
-  res.redirect("/urls");
+  const userID = req.cookies["user_id"];
+  const shortURL = req.params.shortURL;
+  const templateVars = {
+    currentUser: users[userID],
+    urls: urlDatabase,
+    userID: req.cookies["user_id"],
+  };
+  if (templateVars.urls[shortURL].userID === userID) {
+    delete urlDatabase[shortURL];
+    res.redirect("/urls");
+  } else {
+    console.log("Cannot delete");
+  }
 });
 
 //add url to the database and redirect to the tiny url's page
 app.post("/urls", (req, res) => {
   const { longURL } = req.body; // Log the POST request body to the console
   const shortURL = generateRandomString();
-
   const userID = req.cookies["user_id"];
   const templateVars = {
     currentUser: users[userID],
     urls: urlDatabase,
     userID: req.cookies["user_id"],
   };
-
   //add new url to the url database
   templateVars.urls[shortURL] = { longURL: longURL, userID: userID };
   console.log(urlDatabase);
