@@ -23,34 +23,33 @@ function generateRandomString() {
 }
 
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "juliaUser" },
-  ed53vd: { longURL: "http://twitter.com", userID: "userRandomID" },
-  d3f355: { longURL: "http://wikipedia.com", userID: "aJ48lW" },
-  sf34sf: { longURL: "http://www.lighthouselabs.ca", userID: "juliaUser" },
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "7hXWLw" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "wUHWhw" },
+  ed53vd: { longURL: "http://twitter.com", userID: "7hXWLw" },
+  d3f355: { longURL: "http://wikipedia.com", userID: "7hXWLw" },
+  sf34sf: { longURL: "http://www.lighthouselabs.ca", userID: "wUHWhw" },
+  wwKFoE: { longURL: "http://www.buzzfeed.com", userID: "J2J1f2" },
+  SngLcS: { longURL: "http://www.facebook.com", userID: "J2J1f2" },
 };
-// const urlDatabase = {
-//   b2xVn2: "http://www.lighthouselabs.ca",
-//   "9sm5xK": "http://www.google.com",
-//   h34Jak: "http://twitter.com",
-//   s8fjj2: "http://wikipedia.com",
-// };
 
 const users = {
-  userRandomID: {
-    id: "userRandomID",
+  "7hXWLw": {
+    id: "7hXWLw",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur",
+    password: "$2b$10$15uYCNfhoMtdbGtos55G7ultdCoJ7b14QGJr3YwpoOXmvznpdpQSG",
+    //   password: "purple-monkey-dinosaur"
   },
-  user2RandomID: {
-    id: "user2RandomID",
+  wUHWhw: {
+    id: "wUHWhw",
     email: "user2@example.com",
-    password: "dishwasher-funk",
+    password: "$2b$10$1R83e4316.RtpB6ziu.dnOLbY9Dlt69BFFJUBpAWMOcvE4Fi8UMjm",
+    //   password: "dishwasher-funk",
   },
-  juliaUser: {
-    id: "juliaUser",
+  J2J1f2: {
+    id: "J2J1f2",
     email: "email@example.com",
-    password: "123",
+    password: "$2b$10$9Bc6Tf4vmOoZRH74K20jougZr2txG3scMNBrmYYmKWx1jSiWMRfTy",
+    //  passord: 123
   },
 };
 
