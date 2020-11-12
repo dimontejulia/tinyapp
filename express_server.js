@@ -8,6 +8,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
+const bcrypt = require("bcrypt");
+
 function generateRandomString() {
   let randString = "";
   const characters =
@@ -100,7 +102,8 @@ app.post("/register", (req, res) => {
     res.send("Response - 400 Account already exists!");
   } else {
     userID = generateRandomString();
-    users[userID] = { id: userID, email: email, password: password };
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    users[userID] = { id: userID, email: email, password: hashedPassword };
     console.log(users);
     res.cookie("user_id", userID);
     res.redirect("/urls");
@@ -122,8 +125,10 @@ const duplicateEmail = function (checkEmail) {
 const validatePassword = function (enteredPassword) {
   console.log("in function");
   const keys = Object.keys(users);
+
   for (let key of keys) {
-    if (enteredPassword === users[key].password) {
+    const hashedPassword = users[key].password;
+    if (bcrypt.compareSync(enteredPassword, hashedPassword)) {
       return true;
     }
   }
