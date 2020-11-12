@@ -21,11 +21,18 @@ function generateRandomString() {
 }
 
 const urlDatabase = {
-  b2xVn2: "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
-  h34Jak: "http://twitter.com",
-  s8fjj2: "http://wikipedia.com",
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "juliaUser" },
+  ed53vd: { longURL: "http://twitter.com", userID: "userRandomID" },
+  d3f355: { longURL: "http://wikipedia.com", userID: "aJ48lW" },
+  sf34sf: { longURL: "http://www.lighthouselabs.ca", userID: "juliaUser" },
 };
+// const urlDatabase = {
+//   b2xVn2: "http://www.lighthouselabs.ca",
+//   "9sm5xK": "http://www.google.com",
+//   h34Jak: "http://twitter.com",
+//   s8fjj2: "http://wikipedia.com",
+// };
 
 const users = {
   userRandomID: {
@@ -66,6 +73,7 @@ app.get("/urls", (req, res) => {
     currentUser: users[userID],
     userID: userID,
   };
+  console.log(urlDatabase);
   res.render("urls_index", templateVars);
 });
 
@@ -182,7 +190,7 @@ app.post("/urls/:shortURL", (req, res) => {
 
   const shortURL = req.params.shortURL;
   const { longURL } = req.body;
-  urlDatabase[shortURL] = longURL;
+  urlDatabase[shortURL].longURL = longURL;
   res.redirect(`/urls/${req.params.shortURL}`);
 });
 
@@ -190,7 +198,7 @@ app.post("/urls/:shortURL", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   //look up longURL in our url database using shortURL as our key
-  const longURL = urlDatabase[shortURL];
+  const longURL = urlDatabase[shortURL].longURL;
   const userID = req.cookies["user_id"];
   const templateVars = {
     shortURL: shortURL,
@@ -205,8 +213,8 @@ app.get("/urls/:shortURL", (req, res) => {
 //redirects the short url to the actual webpage
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL];
-  res.redirect(longURL);
+  const longURL = urlDatabase[shortURL].longURL;
+  //res.redirect(longURL);
 });
 
 //delete a url and redirect to home page
@@ -219,8 +227,17 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 app.post("/urls", (req, res) => {
   const { longURL } = req.body; // Log the POST request body to the console
   const shortURL = generateRandomString();
+
+  const userID = req.cookies["user_id"];
+  const templateVars = {
+    currentUser: users[userID],
+    urls: urlDatabase,
+    userID: req.cookies["user_id"],
+  };
+
   //add new url to the url database
-  urlDatabase[shortURL] = longURL;
+  templateVars.urls[shortURL] = { longURL: longURL, userID: userID };
+  console.log(urlDatabase);
   res.redirect(`urls/${shortURL}`);
 });
 

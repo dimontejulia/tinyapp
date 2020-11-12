@@ -33,7 +33,8 @@
           <% for(let url in urls) { %>
           <tr>
             <td><%= url %></td>
-            <td><%= urls[url] %></td>
+            <% const fullURL = urls[url].longURL;%>
+            <td><a href="<%=fullURL%>"> <%= fullURL %></a></td>
             <td>
               <form action="/urls/<%=url%>">
                 <button class="btn btn-outline-primary">Edit</button>
