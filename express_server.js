@@ -124,7 +124,6 @@ const validatePassword = function (enteredPassword) {
   const keys = Object.keys(users);
   for (let key of keys) {
     if (enteredPassword === users[key].password) {
-      console.log("passwords are the same");
       return true;
     }
   }
@@ -156,11 +155,16 @@ app.post("/login", (req, res) => {
     res.status(400);
     res.send("Response - 403 Account doesn't exist, please register");
   } else {
-    userID = generateRandomString();
-    users[userID] = { id: userID, email: email, password: password };
-    console.log(users);
-    res.cookie("user_id", userID);
-    res.redirect("/urls");
+    const keys = Object.keys(users);
+    for (let key of keys) {
+      if (users[key].email === email) {
+        const currentID = users[key].id;
+        console.log(currentID);
+        console.log(users);
+        res.cookie("user_id", currentID);
+        res.redirect("/urls");
+      }
+    }
   }
 });
 
@@ -187,11 +191,12 @@ app.post("/urls/:shortURL", (req, res) => {
     currentUser: users[userID],
     userID: userID,
   };
-
-  const shortURL = req.params.shortURL;
-  const { longURL } = req.body;
-  urlDatabase[shortURL].longURL = longURL;
-  res.redirect(`/urls/${req.params.shortURL}`);
+  if (userID === currentUser) {
+    const shortURL = req.params.shortURL;
+    const { longURL } = req.body;
+    urlDatabase[shortURL].longURL = longURL;
+    res.redirect(`/urls/${req.params.shortURL}`);
+  }
 });
 
 //page that displays a single URL and its shortened form
