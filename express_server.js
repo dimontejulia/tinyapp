@@ -15,7 +15,7 @@ app.use(
 
 const bcrypt = require("bcrypt");
 
-//const getUserByEmail = require("./helpers");
+const getUserByEmail = require("./helpers");
 const generateRandomString = require("./helpers");
 
 const urlDatabase = {
@@ -144,24 +144,18 @@ app.post("/login", (req, res) => {
     res.send("Response - 403 Account doesn't exist, please register");
   } else if (validatePassword(password) === false) {
     res.status(400);
-    res.send("Response - 403 Account doesn't exist, please register");
+    res.send("Response - 403 Invalid password. Please try again");
   } else {
-    const keys = Object.keys(users);
-    for (let key of keys) {
-      if (users[key].email === email) {
-        const currentID = users[key].id;
-        req.session.user_id = currentID;
-        res.redirect("/urls");
-      }
-    }
+    const currentUser = getUserByEmail(email, users);
+    const currentID = currentUser.id;
+    req.session.user_id = currentID;
+    res.redirect("/urls");
   }
 });
 
 //checks if password matches the one in the database
 const validatePassword = function (enteredPassword) {
-  console.log("in function");
   const keys = Object.keys(users);
-
   for (let key of keys) {
     const hashedPassword = users[key].password;
     if (bcrypt.compareSync(enteredPassword, hashedPassword)) {
