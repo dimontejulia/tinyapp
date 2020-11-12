@@ -215,6 +215,10 @@ app.post("/urls/:shortURL", (req, res) => {
 //page that displays a single URL and its shortened form
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
+  if (urlDatabase[shortURL] === undefined) {
+    res.status(404);
+    res.send("404: The requested resource was not found in the database.");
+  }
   //look up longURL in our url database using shortURL as our key
   const longURL = urlDatabase[shortURL].longURL;
   const userID = req.session.user_id;
@@ -231,6 +235,10 @@ app.get("/urls/:shortURL", (req, res) => {
 //redirects the short url to the actual webpage
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
+  if (urlDatabase[shortURL] === undefined) {
+    res.status(404);
+    res.send("404: The requested resource was not found in the database.");
+  }
   const userID = req.session.user_id;
   const templateVars = {
     currentUser: users[userID],
