@@ -15,17 +15,8 @@ app.use(
 
 const bcrypt = require("bcrypt");
 
-function generateRandomString() {
-  let randString = "";
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  while (randString.length < 6) {
-    randString += characters.charAt(
-      Math.floor(Math.random() * characters.length)
-    );
-  }
-  return randString;
-}
+//const getUserByEmail = require("./helpers");
+const generateRandomString = require("./helpers");
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "GMwYL5" },
@@ -130,20 +121,6 @@ const duplicateEmail = function (checkEmail) {
   return false;
 };
 
-//checks if password matches the one in the database
-const validatePassword = function (enteredPassword) {
-  console.log("in function");
-  const keys = Object.keys(users);
-
-  for (let key of keys) {
-    const hashedPassword = users[key].password;
-    if (bcrypt.compareSync(enteredPassword, hashedPassword)) {
-      return true;
-    }
-  }
-  return false;
-};
-
 //new page that allows user to login
 app.get("/urls/login", (req, res) => {
   const userID = req.session.user_id;
@@ -169,21 +146,29 @@ app.post("/login", (req, res) => {
     res.status(400);
     res.send("Response - 403 Account doesn't exist, please register");
   } else {
-    const user = getUserByEmail(email, users);
-    const currentID = user.id;
-    req.session.user_id = currentID;
-    res.redirect("/urls");
+    const keys = Object.keys(users);
+    for (let key of keys) {
+      if (users[key].email === email) {
+        const currentID = users[key].id;
+        req.session.user_id = currentID;
+        res.redirect("/urls");
+      }
+    }
   }
 });
 
-const getUserByEmail = function (email, database) {
-  const users = database;
+//checks if password matches the one in the database
+const validatePassword = function (enteredPassword) {
+  console.log("in function");
   const keys = Object.keys(users);
+
   for (let key of keys) {
-    if (users[key].email === email) {
-      return users[key];
+    const hashedPassword = users[key].password;
+    if (bcrypt.compareSync(enteredPassword, hashedPassword)) {
+      return true;
     }
   }
+  return false;
 };
 
 //page that allows user to create a new url
