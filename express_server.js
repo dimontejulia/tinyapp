@@ -16,7 +16,7 @@ app.use(
 const bcrypt = require("bcrypt");
 
 const getUserByEmail = require("./helpers");
-const generateRandomString = require("./helpers");
+//const generateRandomString = require("./helpers");
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "GMwYL5" },
@@ -59,7 +59,12 @@ app.set("view engine", "ejs");
 
 //homepage: displays hello
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  const userID = req.session.user_id;
+  if (userID !== undefined) {
+    res.redirect("/urls");
+  } else {
+    res.redirect("/urls/login");
+  }
 });
 
 //displays JSON string representing the entire urlDatabase object
@@ -81,13 +86,17 @@ app.get("/urls", (req, res) => {
 
 //page that allows user to register
 app.get("/urls/register", (req, res) => {
-  const userID = req.session.user_id;
-  const templateVars = {
-    urls: urlDatabase,
-    currentUser: users[userID],
-    userID: userID,
-  };
-  res.render("register", templateVars);
+  if (req.session.user_id !== undefined) {
+    res.redirect("/urls");
+  } else {
+    const userID = req.session.user_id;
+    const templateVars = {
+      urls: urlDatabase,
+      currentUser: users[userID],
+      userID: userID,
+    };
+    res.render("register", templateVars);
+  }
 });
 
 //new register a new user
@@ -123,13 +132,17 @@ const duplicateEmail = function (checkEmail) {
 
 //new page that allows user to login
 app.get("/urls/login", (req, res) => {
-  const userID = req.session.user_id;
-  const templateVars = {
-    urls: urlDatabase,
-    currentUser: users[userID],
-    userID: userID,
-  };
-  res.render("login", templateVars);
+  if (req.session.user_id !== undefined) {
+    res.redirect("/urls");
+  } else {
+    const userID = req.session.user_id;
+    const templateVars = {
+      urls: urlDatabase,
+      currentUser: users[userID],
+      userID: userID,
+    };
+    res.render("login", templateVars);
+  }
 });
 
 //login page, store the userID in a cookie and redirects to home page
@@ -176,7 +189,7 @@ app.get("/urls/new", (req, res) => {
   if (templateVars.currentUser !== undefined) {
     res.render("urls_new", templateVars);
   } else {
-    res.redirect("/urls");
+    res.redirect("/urls/login");
   }
 });
 
@@ -260,6 +273,18 @@ app.post("/urls", (req, res) => {
   console.log(urlDatabase);
   res.redirect(`urls/${shortURL}`);
 });
+
+function generateRandomString() {
+  let randString = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  while (randString.length < 6) {
+    randString += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
+  }
+  return randString;
+}
 
 //logout page, clears the userID cookie and redirects to home page
 app.post("/logout", (req, res) => {
