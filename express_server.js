@@ -38,6 +38,11 @@ const users = {
     email: "user2@example.com",
     password: "dishwasher-funk",
   },
+  juliaUser: {
+    id: "juliaUser",
+    email: "email@example.com",
+    password: "123",
+  },
 };
 
 //set the view engine to ejs
@@ -159,7 +164,26 @@ app.get("/urls/new", (req, res) => {
     currentUser: users[userID],
     userID: userID,
   };
-  res.render("urls_new", templateVars);
+  if (templateVars.currentUser !== undefined) {
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/urls");
+  }
+});
+
+//edit url and redirect to it's page
+app.post("/urls/:shortURL", (req, res) => {
+  const userID = req.cookies["user_id"];
+  const templateVars = {
+    urls: urlDatabase,
+    currentUser: users[userID],
+    userID: userID,
+  };
+
+  const shortURL = req.params.shortURL;
+  const { longURL } = req.body;
+  urlDatabase[shortURL] = longURL;
+  res.redirect(`/urls/${req.params.shortURL}`);
 });
 
 //page that displays a single URL and its shortened form
@@ -198,14 +222,6 @@ app.post("/urls", (req, res) => {
   //add new url to the url database
   urlDatabase[shortURL] = longURL;
   res.redirect(`urls/${shortURL}`);
-});
-
-//edit url and redirect to it's page
-app.post("/urls/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
-  const { longURL } = req.body;
-  urlDatabase[shortURL] = longURL;
-  res.redirect(`/urls/${req.params.shortURL}`);
 });
 
 //logout page, clears the userID cookie and redirects to home page
