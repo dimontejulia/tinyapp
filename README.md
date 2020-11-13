@@ -7,10 +7,10 @@ Last Update: November 12, 2020
 
 ## Final Product
 
-!["Tiny URL Home Page"](tinyapp/screenshots/homePage.png)
-!["Create URL Page"](tinyapp/screenshots/createURLPage.png)
-!["Registration Page"](tinyapp/screenshots/registerPage.png)
-!["URL Specific Page & Edit"](tinyapp/screenshots/tinyURLPage.png)
+!["Tiny URL Home Page"](tinyapp/docs/homePage.png)
+!["Create URL Page"](tinyapp/docs/createURLPage.png)
+!["Registration Page"](tinyapp/docs/registerPage.png)
+!["URL Specific Page & Edit"](tinyapp/docs/tinyURLPage.png)
 
 ## Dependencies
 
