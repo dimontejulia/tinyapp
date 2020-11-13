@@ -265,7 +265,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 app.post("/urls", (req, res) => {
   let { longURL } = req.body; // Log the POST request body to the console
   if (!longURL.includes("http://") || !longURL.includes("https://")) {
-    console.log("adding http");
     longURL = "http://" + longURL;
   }
   const shortURL = generateRandomString();
