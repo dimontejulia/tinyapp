@@ -5,7 +5,7 @@ const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var cookieSession = require("cookie-session");
+let cookieSession = require("cookie-session");
 app.use(
   cookieSession({
     name: "session",
@@ -15,8 +15,7 @@ app.use(
 
 const bcrypt = require("bcrypt");
 
-const getUserByEmail = require("./helpers");
-//const generateRandomString = require("./helpers");
+const { getUserByEmail } = require("./helpers");
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "GMwYL5" },
@@ -67,11 +66,6 @@ app.get("/", (req, res) => {
   }
 });
 
-//displays JSON string representing the entire urlDatabase object
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
-
 //render the urls_index ejs file
 app.get("/urls", (req, res) => {
   const userID = req.session.user_id;
@@ -110,7 +104,7 @@ app.post("/register", (req, res) => {
     res.status(400);
     res.send("Response - 400 Account already exists!");
   } else {
-    userID = generateRandomString();
+    const userID = generateRandomString();
     const hashedPassword = bcrypt.hashSync(password, 10);
     users[userID] = { id: userID, email: email, password: hashedPassword };
     console.log(users);
@@ -120,7 +114,7 @@ app.post("/register", (req, res) => {
 });
 
 //checks if user email is in the database already
-const duplicateEmail = function (checkEmail) {
+const duplicateEmail = function(checkEmail) {
   const keys = Object.keys(users);
   for (let key of keys) {
     if (checkEmail === users[key].email) {
@@ -167,7 +161,7 @@ app.post("/login", (req, res) => {
 });
 
 //checks if password matches the one in the database
-const validatePassword = function (enteredPassword) {
+const validatePassword = function(enteredPassword) {
   const keys = Object.keys(users);
   for (let key of keys) {
     const hashedPassword = users[key].password;
@@ -282,18 +276,6 @@ app.post("/urls", (req, res) => {
   res.redirect(`urls/${shortURL}`);
 });
 
-function generateRandomString() {
-  let randString = "";
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  while (randString.length < 6) {
-    randString += characters.charAt(
-      Math.floor(Math.random() * characters.length)
-    );
-  }
-  return randString;
-}
-
 //logout page, clears the userID cookie and redirects to home page
 app.post("/logout", (req, res) => {
   //clear cookie
@@ -305,3 +287,21 @@ app.post("/logout", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+//displays JSON string representing the entire urlDatabase object
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
+});
+
+//function that generates a random 6 character string
+const generateRandomString = function() {
+  let randString = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  while (randString.length < 6) {
+    randString += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
+  }
+  return randString;
+};
