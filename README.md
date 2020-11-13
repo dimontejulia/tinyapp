@@ -7,10 +7,10 @@ Last Update: November 12, 2020
 
 ## Final Product
 
-!["Tiny URL Home Page"](tinyapp/docs/homePage.png)
-!["Create URL Page"](tinyapp/docs/createURLPage.png)
-!["Registration Page"](tinyapp/docs/registerPage.png)
-!["URL Specific Page & Edit"](tinyapp/docs/tinyURLPage.png)
+!["Tiny URL Home Page"](https://github.com/dimontejulia/tinyapp/blob/master/docs/homePage.png)
+!["Create URL Page"](https://github.com/dimontejulia/tinyapp/blob/master/docs/createURLPage.png)
+!["Registration Page"](https://github.com/dimontejulia/tinyapp/blob/master/docs/registerPage.png)
+!["URL Specific Page & Edit"](https://github.com/dimontejulia/tinyapp/blob/master/docs/tinyURLPage.png)
 
 ## Dependencies
 
