@@ -263,7 +263,11 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 //add url to the database and redirect to the tiny url's page
 app.post("/urls", (req, res) => {
-  const { longURL } = req.body; // Log the POST request body to the console
+  let { longURL } = req.body; // Log the POST request body to the console
+  if (!longURL.includes("http://") || !longURL.includes("https://")) {
+    console.log("adding http");
+    longURL = "http://" + longURL;
+  }
   const shortURL = generateRandomString();
   const userID = req.session.user_id;
   const templateVars = {
