@@ -56,7 +56,8 @@ const users = {
 //set the view engine to ejs
 app.set("view engine", "ejs");
 
-//homepage: displays hello
+//homepage: redirects user to homepage if logged in
+//redirects user to login if not
 app.get("/", (req, res) => {
   const userID = req.session.user_id;
   if (userID !== undefined) {
@@ -114,7 +115,7 @@ app.post("/register", (req, res) => {
 });
 
 //checks if user email is in the database already
-const duplicateEmail = function(checkEmail) {
+const duplicateEmail = function (checkEmail) {
   const keys = Object.keys(users);
   for (let key of keys) {
     if (checkEmail === users[key].email) {
@@ -161,7 +162,7 @@ app.post("/login", (req, res) => {
 });
 
 //checks if password matches the one in the database
-const validatePassword = function(enteredPassword) {
+const validatePassword = function (enteredPassword) {
   const keys = Object.keys(users);
   for (let key of keys) {
     const hashedPassword = users[key].password;
@@ -294,7 +295,7 @@ app.get("/urls.json", (req, res) => {
 });
 
 //function that generates a random 6 character string
-const generateRandomString = function() {
+const generateRandomString = function () {
   let randString = "";
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
